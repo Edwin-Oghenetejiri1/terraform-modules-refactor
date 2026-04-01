@@ -31,24 +31,44 @@ The key engineering challenge: **migrate Terraform state** to reflect the new mo
 
 ```
 terraform-modules-refactor/
-├── main.tf                     # Root config — wires modules together
+├── monolithic/
+│   └── main.tf                     # Original single-file config (starting point)
 │
-└── modules/
-    ├── vpc/
-    │   ├── main.tf             # VPC, Subnets, IGW, Route Table
-    │   ├── variables.tf        # CIDR blocks, availability zones
-    │   └── outputs.tf          # vpc_id, public_subnet_ids
-    │
-    ├── compute/
-    │   ├── main.tf             # Security Group, EC2 Instance
-    │   ├── variables.tf        # vpc_id, subnet_id
-    │   └── outputs.tf          # instance_public_ip
-    │
-    └── database/
-        ├── main.tf             # DB Subnet Group, RDS Instance
-        ├── variables.tf        # subnet_ids, db credentials
-        └── outputs.tf          # db_endpoint
+├── modules/
+│   ├── vpc/
+│   │   ├── main.tf                 # VPC, Subnets, IGW, Route Table
+│   │   ├── variables.tf            # CIDR blocks, availability zones
+│   │   └── outputs.tf              # vpc_id, public_subnet_ids
+│   │
+│   ├── compute/
+│   │   ├── main.tf                 # Security Group, EC2 Instance
+│   │   ├── variables.tf            # vpc_id, subnet_id
+│   │   └── outputs.tf              # instance_public_ip
+│   │
+│   └── database/
+│       ├── main.tf                 # DB Subnet Group, RDS Instance
+│       ├── variables.tf            # subnet_ids, db credentials
+│       └── outputs.tf              # db_endpoint
+│
+├── main.tf                         # Root config — wires modules together
+└── README.md
 ```
+
+---
+
+## 🔄 Before vs After
+
+The `monolithic/` folder preserves the original starting point of this project — all infrastructure defined in a single `main.tf` file. This is common when first learning Terraform but doesn't scale in real teams.
+
+| | Monolithic (`monolithic/main.tf`) | Modular (`main.tf` + `modules/`) |
+|---|---|---|
+| **Structure** | Everything in one file | Split across focused modules |
+| **Reusability** | None — hardcoded values | Variables make it reusable across envs |
+| **Readability** | Hard to navigate as it grows | Each module has a single responsibility |
+| **Collaboration** | Merge conflicts likely | Teams can work on modules independently |
+| **Real-world use** | Learning / prototyping | Production standard |
+
+The infrastructure provisioned in AWS is **identical** in both versions. The refactor is purely an improvement in code organization.
 
 ---
 
