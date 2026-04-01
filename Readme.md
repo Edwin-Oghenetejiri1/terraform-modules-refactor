@@ -34,7 +34,7 @@ terraform-modules-refactor/
 ├── main.tf                     # Root config — wires modules together
 │
 └── modules/
-    ├── network/
+    ├── vpc/
     │   ├── main.tf             # VPC, Subnets, IGW, Route Table
     │   ├── variables.tf        # CIDR blocks, availability zones
     │   └── outputs.tf          # vpc_id, public_subnet_ids
@@ -83,13 +83,13 @@ After moving code into modules, `terraform plan` initially showed resources as n
 
 ```bash
 # Network resources
-terraform state mv aws_vpc.main                              module.network.aws_vpc.this
-terraform state mv aws_subnet.public                         module.network.aws_subnet.public_1
-terraform state mv aws_subnet.public_2                       module.network.aws_subnet.public_2
-terraform state mv aws_internet_gateway.igw                  module.network.aws_internet_gateway.igw
-terraform state mv aws_route_table.public_rt                 module.network.aws_route_table.public_rt
-terraform state mv aws_route_table_association.public_assoc_1 module.network.aws_route_table_association.public_assoc_1
-terraform state mv aws_route_table_association.public_assoc_2 module.network.aws_route_table_association.public_assoc_2
+terraform state mv aws_vpc.main                              module.vpc.aws_vpc.this
+terraform state mv aws_subnet.public                         module.vpc.aws_subnet.public_1
+terraform state mv aws_subnet.public_2                       module.vpc.aws_subnet.public_2
+terraform state mv aws_internet_gateway.igw                  module.vpc.aws_internet_gateway.igw
+terraform state mv aws_route_table.public_rt                 module.vpc.aws_route_table.public_rt
+terraform state mv aws_route_table_association.public_assoc_1 module.vpc.aws_route_table_association.public_assoc_1
+terraform state mv aws_route_table_association.public_assoc_2 module.vpc.aws_route_table_association.public_assoc_2
 
 # Compute resources
 terraform state mv aws_security_group.web_sg                 module.compute.aws_security_group.web_sg
